@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block title %}starred{% endblock %}
+{% block content %}
+{{ user["username"] }}
+<ul>
+{% for story in stories %}
+<li> <a href={{ story["url"] }}>{{ story["title"] }}</a></li>
+<a href={{ "/page/{}".format(story["id"]) }}>discuss</a>
+{% endfor %}
+</ul>
+{% endblock %}

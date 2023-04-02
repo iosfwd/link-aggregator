@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}{{ comment["id"] }}{% endblock %}
+{% block content %}
+
+<a href={{ post["url"] }}>{{ post["title"] }}</a> {{ post["created_at"].strftime("%Y-%m-%d %H:%M:%S") }}
+<hr>
+you at {{ comment['created_at'].strftime("%Y-%m-%d %H:%M:%S") }}
+<p>
+  {{ comment['body'] }}
+</p>
+<hr>
+{% if session.user_id %}
+<form action={{ "/comment/{}/edit".format(post["id"]) }} method="post">
+  <textarea name="body" rows="5" cols="80">{{ comment["body"] }}</textarea>
+  <br>
+  <input type="submit" value="edit">
+</form>
+{% else %}
+<textarea name="body" rows="5" cols="80" disabled>
+  you must be logged in to comment
+</textarea>
+{% endif %}
+{% endblock %}

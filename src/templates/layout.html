@@ -1,0 +1,21 @@
+<!doctype html>
+<title>link aggregator - {% block title %}{% endblock %}</title>
+<h1>link aggregator</h1>
+<a href="/">front page</a> |
+<a href="/newest">newest</a> |
+<a href="/oldest">oldest</a> |
+<a href="/highest">highest</a> |
+<a href="/lowest">lowest</a> |
+<a href="/most">most discussed</a> |
+<a href="/least">least discussed</a> |
+{% if session.user_id %}
+<a href="/new">create post</a> |
+<a href="/starred">starred</a> |
+<a href="/logout">logout</a>
+{% else %}
+<a href="/login">login</a> |
+<a href="/register">register</a>
+{% endif %}
+<hr>
+{% block content %}{% endblock %}
+<hr>

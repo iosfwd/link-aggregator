@@ -1,3 +1,32 @@
+# 2.4
+
+Tällä hetkellä sovelluksen aiemmin mainitut ominaisuudet on toteutettu
+pl. haku. Lisäksi sovelluksessa voi merkitä itseä kiinnostavia
+linkkejä. Sovellus on tällä hetkellä käyttökokemukseltaan ja
+visuaalisesti todella kämäinen, koska se puoli ei ole tuttua.
+
+# Käynnistysohjeet
+
+Kansiossa src/ on .env tiedosto johon täydennetään tietokannan
+paikallinen osoite ja salainen avain. Pääkäyttäjälle pääsee
+kirjautumaan tunnuksin root:root.
+
+Virtuaaliympäristö ja riippuvuudet:
+
+    $ python3 -m venv venv
+    $ source venv/bin/activate
+    $ pip install -r ./requirements.txt
+
+Skeema:
+
+    $ cd src/
+    $ psql < schema.sql
+
+Käynnistys:
+
+    $ cd src/
+    $ flask run
+
 # Linkkiaggregaattori
 
 Sovellus listaa linkkejä. Sovelluksessa voi jakaa linkkejä

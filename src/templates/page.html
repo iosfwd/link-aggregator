@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% macro render_comments(c_comment) %}
+<ul>
+  <li>
+    <a href={{ "/profile/{}".format(c_comment['user_id']) }}>{{ c_comment['username'] }}</a>
+    at {{ c_comment['created_at'].strftime("%Y-%m-%d %H:%M:%S") }} |
+    <a href={{ "/comment/{}".format(c_comment['id']) }}>reply</a>
+    {% if session.user_id == c_comment['user_id'] or is_admin %} |
+    <a href={{ "/comment/{}/edit".format(c_comment['id']) }}>edit</a> |
+    <a href={{ "/comment/{}/hide".format(c_comment['id']) }}>hide</a>
+    {% endif %}
+
+    <p>
+      {% if c_comment['hidden'] %}
+      <i>comment hidden</i>
+      {% else %}
+      {{ c_comment['body'] }}
+      {% endif %}
+    </p>
+    {% for cc_comment in comments %}
+    {% if cc_comment['parent_comment_id'] == c_comment['id'] %}
+    {{ render_comments(cc_comment) }}
+    {% endif %}
+    {% endfor %}
+  </li>
+</ul>
+{% endmacro %}
+
+{% block title %}{{ post["title"] }}{% endblock %}
+{% block content %}
+<a href={{ post["url"] }}>{{ post["title"] }}</a> {{ post["created_at"].strftime("%Y-%m-%d %H:%M:%S") }}
+{% if session.user_id == post["user_id"] %} |
+<a href={{ "/page/{}/edit".format(post["id"]) }}>edit</a>
+{% endif %}
+<hr>
+votes : {{ votes[0] }}
+<form action={{ "/upvote/{}".format(post["id"]) }} method="post">
+  <button class="upvote">upvote</button>
+</form>
+<form action={{ "/downvote/{}".format(post["id"]) }} method="post">
+<button class="downvote">downvote</button>
+</form>
+<hr>
+{% if session.user_id %}
+<form action={{ "/page/{}".format(post["id"]) }} method="post">
+  <textarea name="body" rows="5" cols="80"></textarea>
+  <br>
+  <input type="submit" value="send">
+</form>
+{% else %}
+<textarea name="body" rows="5" cols="80" disabled>
+  you must be logged in to comment
+</textarea>
+{% endif %}
+<hr>
+<ul>
+{% for comment in comments %}
+{% if comment['parent_comment_id'] is none %}
+<li>
+<a href={{ "/profile/{}".format(comment['user_id']) }}>{{ comment['username'] }}</a>
+at {{ comment['created_at'].strftime("%Y-%m-%d %H:%M:%S") }} |
+<a href={{ "/comment/{}".format(comment['id']) }}>reply</a>
+{% if session.user_id == comment['user_id'] or is_admin %} |
+<a href={{ "/comment/{}/edit".format(comment['id']) }}>edit</a> |
+<a href={{ "/comment/{}/hide".format(comment['id']) }}>hide</a>
+{% endif %}
+<p>
+  {% if comment['hidden'] %}
+  <i>comment hidden</i>
+  {% else %}
+  {{ comment['body'] }}
+  {% endif %}
+</p>
+
+{% for child_comment in comments %}
+{% if child_comment['parent_comment_id'] == comment['id'] %}
+{{ render_comments(child_comment) }}
+{% endif %}
+{% endfor %}
+</li>
+{% endif %}
+{% endfor %}
+</ul>
+{% endblock %}

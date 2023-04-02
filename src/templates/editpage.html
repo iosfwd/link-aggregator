@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}{{ post["title"] }}{% endblock %}
+{% block content %}
+<a href={{ post["url"] }}>{{ post["title"] }}</a> {{ post["created_at"].strftime("%Y-%m-%d %H:%M:%S") }}
+<hr>
+<form action={{ "/page/{}/edit".format(post["id"]) }} method="post">
+  title: <textarea name="title" rows="1" cols="80">{{ post["title"] }}</textarea>
+  <br>
+    url: <textarea name="url" rows="1" cols="80">{{ post["url"] }}</textarea>
+  <br>
+  <input type="submit" value="edit">
+</form>
+{% endblock %}

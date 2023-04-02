@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block title %}new{% endblock %}
+{% block content %}
+<form action="/send" method="post">
+  title: <textarea name="title" rows="1" cols="80"></textarea>
+  <p>
+    url: <textarea name="url" rows="1" cols="80"></textarea>
+  <br>
+  <input type="submit" value="create">
+</form>
+{% endblock %}

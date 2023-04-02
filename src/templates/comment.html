@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}{{ comment["id"] }}{% endblock %}
+{% block content %}
+<a href={{ post["url"] }}>{{ post["title"] }}</a> {{ post["created_at"].strftime("%Y-%m-%d %H:%M:%S") }}
+<hr>
+<a href={{ "/profile/{}".format(comment['user_id']) }}>{{ user['username'] }}</a>
+at {{ comment['created_at'].strftime("%Y-%m-%d %H:%M:%S") }}
+{% if session.user_id == comment['user_id'] %} |
+<a href={{ "/comment/{}/edit".format(comment['id']) }}>edit</a>
+{% endif %}
+<p>
+  {{ comment['body'] }}
+</p>
+<hr>
+{% if session.user_id %}
+<form action={{ "/comment/{}".format(comment["id"]) }} method="post">
+  <textarea name="body" rows="5" cols="80"></textarea>
+  <br>
+  <input type="submit" value="send">
+</form>
+{% else %}
+<textarea name="body" rows="5" cols="80" disabled>
+  you must be logged in to comment
+</textarea>
+{% endif %}
+{% endblock %}
