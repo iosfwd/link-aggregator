@@ -6,7 +6,23 @@ import secrets
 @app.route("/")
 def index():
     post_list = posts.get_posts_front_page()
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=0, has_next=True);
+
+@app.route("/stories")
+def get_stories():
+    pg = request.args.get('pg', default=0, type=int)
+
+    if pg < 0:
+        pg = 0
+
+    offset = 10 * pg
+    post_list = posts.get_posts_front_page(offset)
+
+    has_next = True
+    if len(post_list) < 10:
+        has_next = False
+
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/newest")
 def newest_page():

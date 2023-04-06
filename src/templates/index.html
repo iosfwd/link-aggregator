@@ -31,4 +31,19 @@
 <a href={{ "/page/{}".format(post["id"]) }}>discuss</a>
 {% endfor %}
 </ul>
+
+{% if has_next %}
+<form action="/stories" method="get">
+  <button class="next">next</button>
+  <input type="hidden" name="pg" value="{{ pg + 1 }}">
+</form>
+{% endif %}
+
+{% if pg > 0 %}
+<form action="/stories" method="get">
+  <button class="prev">prev</button>
+  <input type="hidden" name="pg" value="{{ pg - 1 }}">
+</form>
+{% endif %}
+
 {% endblock %}

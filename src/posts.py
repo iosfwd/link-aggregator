@@ -2,12 +2,7 @@ from db import db
 from sqlalchemy import text
 import users
 
-def get_list():
-    sql = text("SELECT * FROM posts")
-    result = db.session.execute(sql)
-    return result.fetchall()
-
-def get_posts_front_page():
+def get_posts_front_page(offset = 0):
     sql = text("""
     SELECT posts.*, COALESCE(sum(votes.vote), 0) as sum
     FROM posts
@@ -15,8 +10,9 @@ def get_posts_front_page():
     WHERE posts.hidden = FAlSE
     GROUP BY posts.id
     ORDER BY sum DESC
+    LIMIT 10 OFFSET :offset
     """)
-    result = db.session.execute(sql)
+    result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
 def get_posts_by_newest():

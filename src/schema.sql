@@ -55,6 +55,15 @@ INSERT INTO users (username, password) VALUES ('noot','pbkdf2:sha256:260000$EoeI
 
 INSERT INTO posts (title, url, user_id) VALUES ('Search engine', 'https://www.google.com', 1);
 INSERT INTO posts (title, url, user_id) VALUES ('Another search engine', 'https://www.bing.com', 2);
+INSERT INTO posts (title, url, user_id) VALUES ('Yle', 'https://yle.fi', 3);
+INSERT INTO posts (title, url, user_id) VALUES ('Hesari', 'https://hs.fi', 2);
+INSERT INTO posts (title, url, user_id) VALUES ('Weather', 'https://www.foreca.fi/Finland/Helsinki/details', 1);
+INSERT INTO posts (title, url, user_id) VALUES ('Github', 'https://github.com', 2);
+INSERT INTO posts (title, url, user_id) VALUES ('Gitlab', 'https://gitlab.com', 3);
+INSERT INTO posts (title, url, user_id) VALUES ('English Wikipedia', 'https://en.wikipedia.org', 1);
+INSERT INTO posts (title, url, user_id) VALUES ('Finnish Wikipedia', 'https://fi.wikipedia.org', 2);
+INSERT INTO posts (title, url, user_id) VALUES ('Study material', 'https://hy-tsoha.github.io/materiaali/', 3);
+INSERT INTO posts (title, url, user_id) VALUES ('Free courses', 'https://mooc.fi', 1);
 
 INSERT INTO comments (body, user_id, post_id) VALUES ('Good search engine', 1, 1);
 INSERT INTO comments (body, user_id, post_id, parent_comment_id) VALUES ('Too much ads', 2, 1, 1);
