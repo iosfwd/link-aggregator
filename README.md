@@ -7,17 +7,21 @@ visuaalisesti todella kämäinen, koska se puoli ei ole tuttua.
 
 # Käynnistysohjeet
 
-Kansiossa src/ on .env tiedosto johon täydennetään tietokannan
-paikallinen osoite ja salainen avain. Pääkäyttäjälle pääsee
-kirjautumaan tunnuksin root:root.
+Pääkäyttäjälle pääsee kirjautumaan tunnuksin root:root.
 
-Virtuaaliympäristö ja riippuvuudet:
+Luo virtuaaliympäristö ja asenna riippuvuudet:
 
     $ python3 -m venv venv
     $ source venv/bin/activate
     $ pip install -r ./requirements.txt
 
-Skeema:
+Luo kansioon src/ .env tiedosto ja täydennä siihen tietokannan
+paikallinen osoite ja salainen avain:
+
+    DATABASE_URL=<tietokannan_osoite>
+    SECRET_KEY=<salainen_avain>
+
+Luo tietokannan skeema:
 
     $ cd src/
     $ psql < schema.sql
