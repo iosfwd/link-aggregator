@@ -91,7 +91,15 @@ def edit_page(post_id):
 
     if request.method == "POST":
         title = request.form["title"]
+
+        if len(title) > 256:
+            return render_template("error.html", message="title was over 256 characters")
+
         url = request.form["url"]
+
+        if len(url) > 2048:
+            return render_template("error.html", message="url was over 2048 characters")
+
         if posts.edit_post(title, url, post_id):
             return redirect("/page/{}".format(post_id))
         else:
