@@ -4,21 +4,26 @@
 <ul>
 {% for post in posts %}
 <li> {{ post["sum"] }} | <a href={{ post["url"] }}>{{ post["title"] }}</a></li>
+
 {% if session.user_id %}
 <form action={{ "/upvote/{}".format(post["id"]) }} method="post">
   <button class="upvote">upvote</button>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 
 <form action={{ "/downvote/{}".format(post["id"]) }} method="post">
-<button class="downvote">downvote</button>
+  <button class="downvote">downvote</button>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 
 <form action={{ "/star/{}".format(post["id"]) }} method="post">
-<button class="star">star</button>
+  <button class="star">star</button>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 {% if session.user_id == post['user_id'] or is_admin %}
 <form action={{ "/page/{}/hide".format(post["id"]) }} method="post">
-<button class="hide">hide</button>
+  <button class="hide">hide</button>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 {% endif %}
 {% endif %}

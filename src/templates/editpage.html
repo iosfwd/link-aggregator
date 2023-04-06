@@ -9,5 +9,6 @@
     url: <textarea name="url" rows="1" cols="80">{{ post["url"] }}</textarea>
   <br>
   <input type="submit" value="edit">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 {% endblock %}

@@ -37,9 +37,11 @@
 votes : {{ votes[0] }}
 <form action={{ "/upvote/{}".format(post["id"]) }} method="post">
   <button class="upvote">upvote</button>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 <form action={{ "/downvote/{}".format(post["id"]) }} method="post">
-<button class="downvote">downvote</button>
+  <button class="downvote">downvote</button>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 <hr>
 {% if session.user_id %}
@@ -47,6 +49,7 @@ votes : {{ votes[0] }}
   <textarea name="body" rows="5" cols="80"></textarea>
   <br>
   <input type="submit" value="send">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 {% else %}
 <textarea name="body" rows="5" cols="80" disabled>

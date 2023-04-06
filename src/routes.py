@@ -1,6 +1,7 @@
 from app import app
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, session
 import users, posts, comments, starred, votes
+import secrets
 
 @app.route("/")
 def index():
@@ -45,6 +46,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         if users.login(username, password):
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
             return render_template("error.html", message="incorrect username or password")
@@ -117,6 +119,9 @@ def send():
     if len(url) > 2048:
             return render_template("error.html", message="url was over 2048 characters")
 
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
+
     if posts.send(title, url):
         return redirect("/")
     else:
@@ -127,6 +132,9 @@ def upvote(id):
     if users.user_id() == 0:
         return render_template("error.html", message="you have to be logged")
 
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
+
     if votes.add_upvote(id):
         return redirect("/page/{}".format(id))
     else:
@@ -136,6 +144,9 @@ def upvote(id):
 def downvote(id):
     if users.user_id() == 0:
         return render_template("error.html", message="you have to be logged")
+
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
 
     if votes.add_downvote(id):
         return redirect("/page/{}".format(id))
@@ -158,6 +169,9 @@ def page(id):
         if len(body) > 10000:
             return render_template("error.html", message="comment was over 10000 characters")
 
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
+
         if comments.send(body, user_id, id):
             return redirect("/page/{}".format(id))
         else:
@@ -178,6 +192,9 @@ def comment_page(comment_id):
 
         if len(body) > 10000:
             return render_template("error.html", message="comment was over 10000 characters")
+
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
 
         if comments.reply(body, user_id, comment.post_id, comment_id):
             return redirect("/page/{}".format(comment.post_id))
@@ -202,15 +219,21 @@ def edit_comment_page(comment_id):
         if len(body) > 10000:
             return render_template("error.html", message="comment was over 10000 characters")
 
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
+
         if comments.edit_comment(body, comment_id):
             return redirect("/comment/{}".format(comment_id))
         else:
             return render_template("error.html", message="editing comment failed")
 
-@app.route("/comment/<int:comment_id>/hide")
+@app.route("/comment/<int:comment_id>/hide", methods=["POST"])
 def hide_comment_page(comment_id):
     comment = comments.get_comment(comment_id)
     user_id = users.user_id()
+
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
 
     if comment.user_id != user_id and not users.is_admin():
         return render_template("error.html", message="you can only hide your own comments")
@@ -220,10 +243,13 @@ def hide_comment_page(comment_id):
     else:
         return render_template("error.html", message="hiding comment failed")
 
-@app.route("/page/<int:post_id>/hide", methods=["GET", "POST"])
+@app.route("/page/<int:post_id>/hide", methods=["POST"])
 def hide_post_page(post_id):
     user_id = users.user_id()
     post = posts.get_post(post_id)
+
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
 
     if post.user_id != user_id and not users.is_admin():
         return render_template("error.html", message="you can only hide your own posts")
@@ -248,6 +274,9 @@ def starred_page():
 def star_page(id):
     if users.user_id() == 0:
         return render_template("error.html", message="you have to be logged")
+
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
 
     if starred.add_starred(id):
         return redirect("/")
