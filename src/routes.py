@@ -10,32 +10,32 @@ def index():
 @app.route("/newest")
 def newest_page():
     post_list = posts.get_posts_by_newest()
-    return render_template("index.html", posts=post_list);
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
 
 @app.route("/oldest")
 def oldest_page():
     post_list = posts.get_posts_by_oldest()
-    return render_template("index.html", posts=post_list);
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
 
 @app.route("/highest")
 def highest_voted_page():
     post_list = posts.get_posts_by_most_votes()
-    return render_template("index.html", posts=post_list);
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
 
 @app.route("/lowest")
 def lowest_voted_page():
     post_list = posts.get_posts_by_least_votes()
-    return render_template("index.html", posts=post_list);
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
 
 @app.route("/most")
 def most_commented_page():
     post_list = posts.get_posts_by_most_comments()
-    return render_template("index.html", posts=post_list);
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
 
 @app.route("/least")
 def least_commented_page():
     post_list = posts.get_posts_by_least_comments()
-    return render_template("index.html", posts=post_list);
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -100,7 +100,15 @@ def edit_page(post_id):
 @app.route("/send", methods=["POST"])
 def send():
     title = request.form["title"]
+
+    if len(title) > 256:
+            return render_template("error.html", message="title was over 256 characters")
+
     url = request.form["url"]
+
+    if len(url) > 2048:
+            return render_template("error.html", message="url was over 2048 characters")
+
     if posts.send(title, url):
         return redirect("/")
     else:
@@ -138,6 +146,10 @@ def page(id):
     if request.method == "POST":
         user_id = users.user_id()
         body = request.form["body"]
+
+        if len(body) > 10000:
+            return render_template("error.html", message="comment was over 10000 characters")
+
         if comments.send(body, user_id, id):
             return redirect("/page/{}".format(id))
         else:
@@ -155,6 +167,10 @@ def comment_page(comment_id):
         comment = comments.get_comment(comment_id)
         user_id = users.user_id()
         body = request.form["body"]
+
+        if len(body) > 10000:
+            return render_template("error.html", message="comment was over 10000 characters")
+
         if comments.reply(body, user_id, comment.post_id, comment_id):
             return redirect("/page/{}".format(comment.post_id))
         else:
@@ -174,6 +190,10 @@ def edit_comment_page(comment_id):
 
     if request.method == "POST":
         body = request.form["body"]
+
+        if len(body) > 10000:
+            return render_template("error.html", message="comment was over 10000 characters")
+
         if comments.edit_comment(body, comment_id):
             return redirect("/comment/{}".format(comment_id))
         else:
