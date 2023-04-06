@@ -81,8 +81,10 @@ def get_posts_by_most_comments():
     FROM comments
     GROUP BY post_id
     ) AS counts ON posts.id = counts.post_id
+    WHERE posts.hidden = FAlSE
     GROUP BY posts.id, sum, count
-    ORDER BY count DESC;
+    ORDER BY count DESC
+
     """)
     result = db.session.execute(sql)
     return result.fetchall()
@@ -101,8 +103,9 @@ def get_posts_by_least_comments():
     FROM comments
     GROUP BY post_id
     ) AS counts ON posts.id = counts.post_id
+    WHERE posts.hidden = FAlSE
     GROUP BY posts.id, sum, count
-    ORDER BY count ASC;
+    ORDER BY count ASC
     """)
     result = db.session.execute(sql)
     return result.fetchall()
@@ -153,8 +156,9 @@ def search(query):
     sql = text("""
     SELECT *
     FROM posts
-    WHERE (title LIKE :query)
-    OR (url LIKE :query)
+    WHERE posts.hidden = FAlSE
+    AND ((title LIKE :query)
+    OR (url LIKE :query))
     """)
     result = db.session.execute(sql, {"query":"%"+query+"%"})
     return result.fetchall()

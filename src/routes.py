@@ -283,6 +283,19 @@ def star_page(id):
     else:
         return render_template("error.html", message="starring failed")
 
+@app.route("/destar/<int:id>", methods=["POST"])
+def destar_page(id):
+    if users.user_id() == 0:
+        return render_template("error.html", message="you have to be logged")
+
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
+
+    if starred.remove_starred(id):
+        return redirect("/starred")
+    else:
+        return render_template("error.html", message="starring failed")
+
 @app.route("/profile/<int:id>")
 def profile_page(id):
     user = users.get_user(id)

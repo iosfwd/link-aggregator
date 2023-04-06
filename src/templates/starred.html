@@ -1,11 +1,18 @@
 {% extends "layout.html" %}
 {% block title %}starred{% endblock %}
 {% block content %}
-{{ user["username"] }}
+your starred:
 <ul>
 {% for story in stories %}
 <li> <a href={{ story["url"] }}>{{ story["title"] }}</a></li>
-<a href={{ "/page/{}".format(story["id"]) }}>discuss</a>
+
+<form action={{ "/destar/{}".format(story["id"]) }} method="post">
+  <button class="destar">destar</button>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+</form>
+
+<a href={{ "/page/{}".format(story["post_id"]) }}>discuss</a>
+
 {% endfor %}
 </ul>
 {% endblock %}

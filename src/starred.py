@@ -3,7 +3,11 @@ from sqlalchemy import text
 import users
 
 def get_starred_for_user(user_id):
-    sql = text("SELECT * FROM posts, starred WHERE starred.post_id=posts.id AND starred.user_id=:user_id")
+    sql = text("""SELECT * FROM posts, starred
+    WHERE starred.post_id=posts.id
+    AND starred.user_id=:user_id
+    AND posts.hidden = FALSE
+    """)
     result = db.session.execute(sql, {"user_id":user_id})
     return result.fetchall()
 
@@ -22,12 +26,12 @@ def add_starred(post_id):
     db.session.commit()
     return True
 
-def remove_starred(post_id):
+def remove_starred(id):
     user_id = users.user_id()
     if user_id == 0:
         return False
 
-    sql = text("DELETE FROM starred WHERE starred.user_id=:user_id AND starred.post_id=:post_id")
-    db.session.execute(sql, {"user_id":user_id, "post_id":post_id})
+    sql = text("DELETE FROM starred WHERE starred.id=:id")
+    db.session.execute(sql, {"id":id})
     db.session.commit()
     return True
