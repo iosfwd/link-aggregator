@@ -148,3 +148,13 @@ def hide_post(post_id):
     db.session.execute(sql, {"post_id":post_id})
     db.session.commit()
     return True
+
+def search(query):
+    sql = text("""
+    SELECT *
+    FROM posts
+    WHERE (title LIKE :query)
+    OR (url LIKE :query)
+    """)
+    result = db.session.execute(sql, {"query":"%"+query+"%"})
+    return result.fetchall()

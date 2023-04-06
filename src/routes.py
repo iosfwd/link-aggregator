@@ -234,3 +234,9 @@ def profile_page(id):
 
     stories = posts.get_posts_by_user(id)
     return render_template("profile.html", user=user, stories=stories)
+
+@app.route("/result")
+def result():
+    query = request.args["query"]
+    post_list = posts.search(query)
+    return render_template("result.html", posts=post_list)
