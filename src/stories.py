@@ -2,7 +2,7 @@ from db import db
 from sqlalchemy import text
 import users
 
-def get_posts_front_page(offset = 0):
+def get_stories_front_page(offset = 0):
     sql = text("""
     SELECT *
     FROM story_view
@@ -12,7 +12,7 @@ def get_posts_front_page(offset = 0):
     result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_newest(offset = 0):
+def get_stories_by_newest(offset = 0):
     sql = text("""
     SELECT *
     FROM story_view
@@ -22,7 +22,7 @@ def get_posts_by_newest(offset = 0):
     result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_oldest(offset = 0):
+def get_stories_by_oldest(offset = 0):
     sql = text("""
     SELECT *
     FROM story_view
@@ -32,7 +32,7 @@ def get_posts_by_oldest(offset = 0):
     result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_most_votes(offset = 0):
+def get_stories_by_most_votes(offset = 0):
     sql = text("""
     SELECT *
     FROM story_view
@@ -42,7 +42,7 @@ def get_posts_by_most_votes(offset = 0):
     result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_least_votes(offset = 0):
+def get_stories_by_least_votes(offset = 0):
     sql = text("""
     SELECT *
     FROM story_view
@@ -52,7 +52,7 @@ def get_posts_by_least_votes(offset = 0):
     result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_most_comments(offset = 0):
+def get_stories_by_most_comments(offset = 0):
     sql = text("""
     SELECT *
     FROM story_view
@@ -62,7 +62,7 @@ def get_posts_by_most_comments(offset = 0):
     result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_least_comments(offset = 0):
+def get_stories_by_least_comments(offset = 0):
     sql = text("""
     SELECT *
     FROM story_view
@@ -73,8 +73,8 @@ def get_posts_by_least_comments(offset = 0):
     result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_post(id):
-    sql = text("SELECT * FROM posts WHERE id=:id")
+def get_story(id):
+    sql = text("SELECT * FROM stories WHERE id=:id")
     result = db.session.execute(sql, {"id":id})
     return result.fetchone()
 
@@ -83,44 +83,43 @@ def send(title, url):
     if user_id == 0:
         return False
 
-    sql = text("INSERT INTO posts (title, url, user_id) VALUES (:title, :url, :user_id)")
+    sql = text("INSERT INTO stories (title, url, user_id) VALUES (:title, :url, :user_id)")
     db.session.execute(sql, {"title":title, "url":url, "user_id":user_id})
     db.session.commit()
     return True
 
-def get_posts_by_user(user_id):
-    sql = text("SELECT * FROM posts WHERE user_id=:user_id")
+def get_stories_by_user(user_id):
+    sql = text("SELECT * FROM stories WHERE user_id=:user_id")
     result = db.session.execute(sql, {"user_id":user_id})
     return result.fetchall()
 
-def edit_post(title, url, id):
+def edit_story(title, url, id):
     if users.user_id() == 0:
         return False
 
-    sql = text("UPDATE posts SET (title, url) = (:title, :url) WHERE posts.id=:id")
+    sql = text("UPDATE stories SET (title, url) = (:title, :url) WHERE stories.id=:id")
     db.session.execute(sql, {"title":title, "url":url, "id":id})
     db.session.commit()
     return True
 
-def hide_post(post_id):
+def hide_story(story_id):
     if users.user_id() == 0:
         return False
 
     sql = text("""
-    UPDATE posts
+    UPDATE stories
     SET hidden=TRUE
-    WHERE posts.id=:post_id
+    WHERE stories.id=:story_id
     """)
-    db.session.execute(sql, {"post_id":post_id})
+    db.session.execute(sql, {"story_id":story_id})
     db.session.commit()
     return True
 
 def search(query):
     sql = text("""
     SELECT *
-    FROM posts
-    WHERE posts.hidden = FAlSE
-    AND ((title LIKE :query)
+    FROM story_view
+    WHERE ((title LIKE :query)
     OR (url LIKE :query))
     """)
     result = db.session.execute(sql, {"query":"%"+query+"%"})

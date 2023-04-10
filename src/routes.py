@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, request, redirect, session
-import users, posts, comments, starred, votes
+import users, stories, comments, starred, votes
 
 @app.route("/")
 def index():
@@ -10,14 +10,14 @@ def index():
         pg = 0
 
     offset = 10 * pg
-    post_list = posts.get_posts_front_page(offset)
+    story_list = stories.get_stories_front_page(offset)
 
     has_next = True
-    if len(post_list) < 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
-                           posts=post_list,
+                           stories=story_list,
                            is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
@@ -31,14 +31,14 @@ def newest_page():
         pg = 0
 
     offset = 10 * pg
-    post_list = posts.get_posts_by_newest(offset)
+    story_list = stories.get_stories_by_newest(offset)
 
     has_next = True
-    if len(post_list) < 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
-                           posts=post_list,
+                           stories=story_list,
                            is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
@@ -52,14 +52,14 @@ def oldest_page():
         pg = 0
 
     offset = 10 * pg
-    post_list = posts.get_posts_by_oldest(offset)
+    story_list = stories.get_stories_by_oldest(offset)
 
     has_next = True
-    if len(post_list) < 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
-                           posts=post_list,
+                           stories=story_list,
                            is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
@@ -73,14 +73,14 @@ def highest_voted_page():
         pg = 0
 
     offset = 10 * pg
-    post_list = posts.get_posts_by_most_votes(offset)
+    story_list = stories.get_stories_by_most_votes(offset)
 
     has_next = True
-    if len(post_list) < 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
-                           posts=post_list,
+                           stories=story_list,
                            is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
@@ -94,14 +94,14 @@ def lowest_voted_page():
         pg = 0
 
     offset = 10 * pg
-    post_list = posts.get_posts_by_least_votes(offset)
+    story_list = stories.get_stories_by_least_votes(offset)
 
     has_next = True
-    if len(post_list) < 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
-                           posts=post_list,
+                           stories=story_list,
                            is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
@@ -115,14 +115,14 @@ def most_commented_page():
         pg = 0
 
     offset = 10 * pg
-    post_list = posts.get_posts_by_most_comments(offset)
+    story_list = stories.get_stories_by_most_comments(offset)
 
     has_next = True
-    if len(post_list) < 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
-                           posts=post_list,
+                           stories=story_list,
                            is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
@@ -136,14 +136,14 @@ def least_commented_page():
         pg = 0
 
     offset = 10 * pg
-    post_list = posts.get_posts_by_least_comments(offset)
+    story_list = stories.get_stories_by_least_comments(offset)
 
     has_next = True
-    if len(post_list) < 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
-                           posts=post_list,
+                           stories=story_list,
                            is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
@@ -190,16 +190,16 @@ def new():
 
     return render_template("new.html")
 
-@app.route("/page/<int:post_id>/edit", methods=["GET", "POST"])
-def edit_page(post_id):
-    post = posts.get_post(post_id)
+@app.route("/story/<int:story_id>/edit", methods=["GET", "POST"])
+def edit_story(story_id):
+    story = stories.get_story(story_id)
     user_id = users.user_id()
 
-    if post.user_id != user_id and not users.is_admin():
-        return render_template("error.html", message="you can only edit your own posts")
+    if story.user_id != user_id and not users.is_admin():
+        return render_template("error.html", message="you can only edit your own stories")
 
     if request.method == "GET":
-        return render_template("editpage.html", post=post)
+        return render_template("editstory.html", story=story)
 
     if request.method == "POST":
         title = request.form["title"]
@@ -212,8 +212,8 @@ def edit_page(post_id):
         if len(url) > 2048:
             return render_template("error.html", message="url was over 2048 characters")
 
-        if posts.edit_post(title, url, post_id):
-            return redirect("/page/{}".format(post_id))
+        if stories.edit_story(title, url, story_id):
+            return redirect("/story/{}".format(story_id))
         else:
             return render_template("error.html", message="editing comment failed")
 
@@ -232,10 +232,10 @@ def send():
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
 
-    if posts.send(title, url):
+    if stories.send(title, url):
         return redirect("/")
     else:
-        return render_template("error.html", message="creating post failed")
+        return render_template("error.html", message="creating story failed")
 
 @app.route("/upvote/<int:id>", methods=["POST"])
 def upvote(id):
@@ -246,7 +246,7 @@ def upvote(id):
         abort(403)
 
     if votes.add_upvote(id):
-        return redirect("/page/{}".format(id))
+        return redirect("/story/{}".format(id))
     else:
         return render_template("error.html", message="upvoting failed")
 
@@ -259,18 +259,18 @@ def downvote(id):
         abort(403)
 
     if votes.add_downvote(id):
-        return redirect("/page/{}".format(id))
+        return redirect("/story/{}".format(id))
     else:
         return render_template("error.html", message="downvoting failed")
 
 
-@app.route("/page/<int:id>", methods=["GET", "POST"])
-def page(id):
+@app.route("/story/<int:id>", methods=["GET", "POST"])
+def story_page(id):
     if request.method == "GET":
-        post = posts.get_post(id)
-        vts = votes.get_votes_by_post(id)
+        story = stories.get_story(id)
+        vts = votes.get_votes_by_story(id)
         comment_list = comments.get_list(id)
-        return render_template("page.html", post=post, comments=comment_list, votes=vts, is_admin=users.is_admin())
+        return render_template("story.html", story=story, comments=comment_list, votes=vts, is_admin=users.is_admin())
 
     if request.method == "POST":
         user_id = users.user_id()
@@ -283,7 +283,7 @@ def page(id):
             abort(403)
 
         if comments.send(body, user_id, id):
-            return redirect("/page/{}".format(id))
+            return redirect("/story/{}".format(id))
         else:
             return render_template("error.html", message="sending comment failed", is_admin=users.is_admin())
 
@@ -291,9 +291,9 @@ def page(id):
 def comment_page(comment_id):
     if request.method == "GET":
         comment = comments.get_comment(comment_id)
-        post = posts.get_post(comment.post_id)
+        story = stories.get_story(comment.story_id)
         user = users.get_user(comment.user_id)
-        return render_template("comment.html", comment=comment, post=post, user=user)
+        return render_template("comment.html", comment=comment, story=story, user=user)
 
     if request.method == "POST":
         comment = comments.get_comment(comment_id)
@@ -306,8 +306,8 @@ def comment_page(comment_id):
         if session["csrf_token"] != request.form["csrf_token"]:
             abort(403)
 
-        if comments.reply(body, user_id, comment.post_id, comment_id):
-            return redirect("/page/{}".format(comment.post_id))
+        if comments.reply(body, user_id, comment.story_id, comment_id):
+            return redirect("/story/{}".format(comment.story_id))
         else:
             return render_template("error.html", message="sending comment failed")
 
@@ -320,8 +320,8 @@ def edit_comment_page(comment_id):
         return render_template("error.html", message="you can only edit your own comments")
 
     if request.method == "GET":
-        post = posts.get_post(comment.post_id)
-        return render_template("editcomment.html", comment=comment, post=post)
+        story = stories.get_story(comment.story_id)
+        return render_template("editcomment.html", comment=comment, story=story)
 
     if request.method == "POST":
         body = request.form["body"]
@@ -349,25 +349,25 @@ def hide_comment_page(comment_id):
         return render_template("error.html", message="you can only hide your own comments")
 
     if comments.hide_comment(comment_id):
-        return redirect("/page/{}".format(comment.post_id))
+        return redirect("/story/{}".format(comment.story_id))
     else:
         return render_template("error.html", message="hiding comment failed")
 
-@app.route("/page/<int:post_id>/hide", methods=["POST"])
-def hide_post_page(post_id):
+@app.route("/story/<int:story_id>/hide", methods=["POST"])
+def hide_story_page(story_id):
     user_id = users.user_id()
-    post = posts.get_post(post_id)
+    story = stories.get_story(story_id)
 
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
 
-    if post.user_id != user_id and not users.is_admin():
-        return render_template("error.html", message="you can only hide your own posts")
+    if story.user_id != user_id and not users.is_admin():
+        return render_template("error.html", message="you can only hide your own stories")
 
-    if posts.hide_post(post_id):
+    if stories.hide_story(story_id):
         return redirect("/")
     else:
-        return render_template("error.html", message="hiding posts failed")
+        return render_template("error.html", message="hiding stories failed")
 
 @app.route("/starred")
 def starred_page():
@@ -376,9 +376,9 @@ def starred_page():
     if user_id == 0:
         return render_template("error.html", message="you have to be logged")
 
-    stories = starred.get_starred_for_user(user_id)
+    story_list = starred.get_starred_for_user(user_id)
     user = users.get_user(user_id)
-    return render_template("starred.html", user=user, stories=stories)
+    return render_template("starred.html", user=user, stories=story_list)
 
 @app.route("/star/<int:id>", methods=["POST"])
 def star_page(id):
@@ -412,11 +412,11 @@ def profile_page(id):
     if user == None:
         return render_template("error.html", message="profile not found")
 
-    stories = posts.get_posts_by_user(id)
-    return render_template("profile.html", user=user, stories=stories)
+    story_list = stories.get_stories_by_user(id)
+    return render_template("profile.html", user=user, stories=story_list)
 
 @app.route("/result")
 def result():
     query = request.args["query"]
-    post_list = posts.search(query)
-    return render_template("result.html", posts=post_list)
+    story_list = stories.search(query)
+    return render_template("result.html", stories=story_list)

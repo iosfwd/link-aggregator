@@ -2,9 +2,13 @@ from db import db
 from sqlalchemy import text
 import users
 
-def get_list(post_id):
-    sql = text("SELECT C.id, C.body, C.created_at, U.username, C.parent_comment_id, C.user_id, C.hidden FROM comments C, users U WHERE C.user_id=U.id AND C.post_id=:post_id")
-    result = db.session.execute(sql, {"post_id":post_id})
+def get_list(story_id):
+    sql = text("""
+    SELECT C.id, C.body, C.created_at, U.username, C.parent_comment_id, C.user_id, C.hidden
+    FROM comments C, users U
+    WHERE C.user_id=U.id AND C.story_id=:story_id
+    """)
+    result = db.session.execute(sql, {"story_id":story_id})
     return result.fetchall()
 
 def get_comment(id):
@@ -12,24 +16,27 @@ def get_comment(id):
     result = db.session.execute(sql, {"id":id})
     return result.fetchone()
 
-def send(body, user_id, post_id):
-    if user_id == 0:
-        return False
-
-    sql = text("INSERT INTO comments (body, user_id, post_id) VALUES (:body, :user_id, :post_id)")
-    db.session.execute(sql, {"body":body, "user_id":user_id, "post_id":post_id})
-    db.session.commit()
-    return True
-
-def reply(body, user_id, post_id, parent_comment_id):
+def send(body, user_id, story_id):
     if user_id == 0:
         return False
 
     sql = text("""
-    INSERT INTO comments (body, user_id, post_id, parent_comment_id)
-    VALUES (:body, :user_id, :post_id, :parent_comment_id)
+    INSERT INTO comments (body, user_id, story_id)
+    VALUES (:body, :user_id, :story_id)
     """)
-    db.session.execute(sql, {"body":body, "user_id":user_id, "post_id":post_id, "parent_comment_id":parent_comment_id})
+    db.session.execute(sql, {"body":body, "user_id":user_id, "story_id":story_id})
+    db.session.commit()
+    return True
+
+def reply(body, user_id, story_id, parent_comment_id):
+    if user_id == 0:
+        return False
+
+    sql = text("""
+    INSERT INTO comments (body, user_id, story_id, parent_comment_id)
+    VALUES (:body, :user_id, :story_id, :parent_comment_id)
+    """)
+    db.session.execute(sql, {"body":body, "user_id":user_id, "story_id":story_id, "parent_comment_id":parent_comment_id})
     db.session.commit()
     return True
 

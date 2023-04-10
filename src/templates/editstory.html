@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}{{ story["title"] }}{% endblock %}
+{% block content %}
+<a href={{ story["url"] }}>{{ story["title"] }}</a> {{ story["created_at"].strftime("%Y-%m-%d %H:%M:%S") }}
+<hr>
+<form action={{ "/story/{}/edit".format(story["id"]) }} method="post">
+  title: <textarea name="title" rows="1" cols="80">{{ story["title"] }}</textarea>
+  <br>
+    url: <textarea name="url" rows="1" cols="80">{{ story["url"] }}</textarea>
+  <br>
+  <input type="submit" value="edit">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+</form>
+{% endblock %}
