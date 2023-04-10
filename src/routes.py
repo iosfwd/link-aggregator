@@ -38,7 +38,7 @@ def newest_page():
     if len(post_list) < 10:
         has_next = False
 
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
+    return render_template("newest.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/oldest")
 def oldest_page():
@@ -54,7 +54,7 @@ def oldest_page():
     if len(post_list) < 10:
         has_next = False
 
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
+    return render_template("oldest.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/highest")
 def highest_voted_page():
@@ -70,7 +70,7 @@ def highest_voted_page():
     if len(post_list) < 10:
         has_next = False
 
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
+    return render_template("highest.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/lowest")
 def lowest_voted_page():
@@ -86,7 +86,7 @@ def lowest_voted_page():
     if len(post_list) < 10:
         has_next = False
 
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
+    return render_template("lowest.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/most")
 def most_commented_page():
@@ -102,7 +102,7 @@ def most_commented_page():
     if len(post_list) < 10:
         has_next = False
 
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
+    return render_template("most.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/least")
 def least_commented_page():
@@ -118,7 +118,7 @@ def least_commented_page():
     if len(post_list) < 10:
         has_next = False
 
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
+    return render_template("least.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
