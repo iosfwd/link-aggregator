@@ -3,7 +3,7 @@
 {% block content %}
 <ul>
 {% for post in posts %}
-<li> {{ post["sum"] }} | <a href={{ post["url"] }}>{{ post["title"] }}</a></li>
+<li> {{ post["vote_sum"] }} votes | <a href={{ post["url"] }}>{{ post["title"] }}</a> sent by <a href={{ "/profile/{}".format(post["user_id"]) }}>{{ post["username"] }}</a> at {{ post["created_at"].strftime("%Y-%m-%d %H:%M:%S") }} </li>
 
 {% if session.user_id %}
 <form action={{ "/upvote/{}".format(post["id"]) }} method="post">
@@ -28,19 +28,19 @@
 {% endif %}
 {% endif %}
 
-<a href={{ "/page/{}".format(post["id"]) }}>discuss</a>
+{{ post["comment_count"] }} comments | <a href={{ "/page/{}".format(post["id"]) }}>discuss</a>
 {% endfor %}
 </ul>
 
 {% if has_next %}
-<form action="/stories" method="get">
+<form action={{ "/{}".format(ordering) }} method="get">
   <button class="next">next</button>
   <input type="hidden" name="pg" value="{{ pg + 1 }}">
 </form>
 {% endif %}
 
 {% if pg > 0 %}
-<form action="/stories" method="get">
+<form action={{ "/{}".format(ordering) }} method="get">
   <button class="prev">prev</button>
   <input type="hidden" name="pg" value="{{ pg - 1 }}">
 </form>

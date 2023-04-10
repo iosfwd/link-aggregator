@@ -2,6 +2,7 @@ from db import db
 from flask import session
 from sqlalchemy import text
 from werkzeug.security import check_password_hash, generate_password_hash
+import secrets
 
 def login(username, password):
     sql = text("SELECT id, password FROM users WHERE username=:username")
@@ -13,6 +14,7 @@ def login(username, password):
         if check_password_hash(user.password, password):
             session["user_id"] = user.id
             session["csrf_token"] = secrets.token_hex(16)
+            session["is_admin"] = check_admin()
             return True
         else:
             return False
@@ -39,7 +41,7 @@ def get_user(id):
     result = db.session.execute(sql, {"id":id})
     return result.fetchone()
 
-def is_admin():
+def check_admin():
     id = user_id()
     if id == 0:
         return False
@@ -47,3 +49,7 @@ def is_admin():
     sql = text("SELECT is_admin FROM users WHERE users.id=:id")
     result = db.session.execute(sql, {"id":id})
     return result.fetchone().is_admin
+
+
+def is_admin():
+    return session.get("is_admin", False)

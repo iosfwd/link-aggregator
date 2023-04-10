@@ -48,10 +48,28 @@ CREATE TABLE votes (
        UNIQUE(user_id, post_id)
 );
 
+CREATE OR REPLACE VIEW story_view AS
+       SELECT posts.id, posts.title, posts.url, posts.user_id, posts.created_at, usernames.username, COALESCE(sum, 0) as vote_sum, COALESCE(count, 0) as comment_count
+       FROM posts
+       LEFT JOIN (
+       SELECT post_id, sum(votes.vote) as sum
+       FROM votes
+       GROUP BY post_id
+       ) AS sums ON posts.id = sums.post_id
+       LEFT JOIN (
+       SELECT post_id, COUNT(comments.id) AS count
+       FROM comments
+       GROUP BY post_id
+       ) AS counts ON posts.id = counts.post_id
+       LEFT JOIN (
+       SELECT id, username
+       FROM users
+       ) AS usernames ON posts.user_id = usernames.id
+       WHERE posts.hidden = FALSE;
+
 INSERT INTO users (username, password, is_admin) VALUES ('root','pbkdf2:sha256:260000$EoeIX9SsMo07DYoI$80d77f6fafe782482cc7bf556abb670390b022a76a23890a4a5f477ef37bfac5', TRUE);
 INSERT INTO users (username, password) VALUES ('doot','pbkdf2:sha256:260000$EoeIX9SsMo07DYoI$80d77f6fafe782482cc7bf556abb670390b022a76a23890a4a5f477ef37bfac5');
 INSERT INTO users (username, password) VALUES ('noot','pbkdf2:sha256:260000$EoeIX9SsMo07DYoI$80d77f6fafe782482cc7bf556abb670390b022a76a23890a4a5f477ef37bfac5');
-
 
 INSERT INTO posts (title, url, user_id) VALUES ('Search engine', 'https://www.google.com', 1);
 INSERT INTO posts (title, url, user_id) VALUES ('Another search engine', 'https://www.bing.com', 2);
@@ -68,9 +86,19 @@ INSERT INTO posts (title, url, user_id) VALUES ('Free courses', 'https://mooc.fi
 INSERT INTO comments (body, user_id, post_id) VALUES ('Good search engine', 1, 1);
 INSERT INTO comments (body, user_id, post_id, parent_comment_id) VALUES ('Too much ads', 2, 1, 1);
 INSERT INTO comments (body, user_id, post_id, parent_comment_id) VALUES ('I agree', 3, 1, 2);
+INSERT INTO comments (body, user_id, post_id) VALUES ('Another search engine', 1, 2);
+INSERT INTO comments (body, user_id, post_id) VALUES ('Interesting', 2, 2);
 
 INSERT INTO starred (user_id, post_id) VALUES (1, 1);
 
 INSERT INTO votes (user_id, post_id, vote) VALUES (1, 1, 1);
 INSERT INTO votes (user_id, post_id, vote) VALUES (2, 1, 1);
 INSERT INTO votes (user_id, post_id, vote) VALUES (3, 1, 1);
+INSERT INTO votes (user_id, post_id, vote) VALUES (1, 2, 1);
+INSERT INTO votes (user_id, post_id, vote) VALUES (2, 2, 1);
+INSERT INTO votes (user_id, post_id, vote) VALUES (1, 3, 1);
+INSERT INTO votes (user_id, post_id, vote) VALUES (1, 10, 1);
+INSERT INTO votes (user_id, post_id, vote) VALUES (2, 10, 1);
+INSERT INTO votes (user_id, post_id, vote) VALUES (3, 10, 1);
+INSERT INTO votes (user_id, post_id, vote) VALUES (1, 11, 1);
+INSERT INTO votes (user_id, post_id, vote) VALUES (2, 11, 1);

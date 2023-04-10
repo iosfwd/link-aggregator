@@ -4,12 +4,9 @@ import users
 
 def get_posts_front_page(offset = 0):
     sql = text("""
-    SELECT posts.*, COALESCE(sum(votes.vote), 0) as sum
-    FROM posts
-    LEFT JOIN votes ON posts.id = votes.post_id
-    WHERE posts.hidden = FAlSE
-    GROUP BY posts.id
-    ORDER BY sum DESC
+    SELECT *
+    FROM story_view
+    ORDER BY vote_sum DESC
     LIMIT 10 OFFSET :offset
     """)
     result = db.session.execute(sql, {"offset":offset})
@@ -17,11 +14,8 @@ def get_posts_front_page(offset = 0):
 
 def get_posts_by_newest(offset = 0):
     sql = text("""
-    SELECT posts.*, COALESCE(sum(votes.vote), 0) as sum
-    FROM posts
-    LEFT JOIN votes ON posts.id = votes.post_id
-    WHERE posts.hidden = FAlSE
-    GROUP BY posts.id
+    SELECT *
+    FROM story_view
     ORDER BY created_at DESC
     LIMIT 10 OFFSET :offset
     """)
@@ -30,11 +24,8 @@ def get_posts_by_newest(offset = 0):
 
 def get_posts_by_oldest(offset = 0):
     sql = text("""
-    SELECT posts.*, COALESCE(sum(votes.vote), 0) as sum
-    FROM posts
-    LEFT JOIN votes ON posts.id = votes.post_id
-    WHERE posts.hidden = FAlSE
-    GROUP BY posts.id
+    SELECT *
+    FROM story_view
     ORDER BY created_at ASC
     LIMIT 10 OFFSET :offset
     """)
@@ -43,12 +34,9 @@ def get_posts_by_oldest(offset = 0):
 
 def get_posts_by_most_votes(offset = 0):
     sql = text("""
-    SELECT posts.*, COALESCE(sum(votes.vote), 0) as sum
-    FROM posts
-    LEFT JOIN votes ON posts.id = votes.post_id
-    WHERE posts.hidden = FAlSE
-    GROUP BY posts.id
-    ORDER BY sum DESC
+    SELECT *
+    FROM story_view
+    ORDER BY vote_sum DESC
     LIMIT 10 OFFSET :offset
     """)
     result = db.session.execute(sql, {"offset":offset})
@@ -56,12 +44,9 @@ def get_posts_by_most_votes(offset = 0):
 
 def get_posts_by_least_votes(offset = 0):
     sql = text("""
-    SELECT posts.*, COALESCE(sum(votes.vote), 0) as sum
-    FROM posts
-    LEFT JOIN votes ON posts.id = votes.post_id
-    WHERE posts.hidden = FAlSE
-    GROUP BY posts.id
-    ORDER BY sum ASC
+    SELECT *
+    FROM story_view
+    ORDER BY vote_sum ASC
     LIMIT 10 OFFSET :offset
     """)
     result = db.session.execute(sql, {"offset":offset})
@@ -69,21 +54,9 @@ def get_posts_by_least_votes(offset = 0):
 
 def get_posts_by_most_comments(offset = 0):
     sql = text("""
-    SELECT posts.*, COALESCE(sum, 0) as sum, COALESCE(count, 0) as count
-    FROM posts
-    LEFT JOIN (
-    SELECT post_id, sum(votes.vote) as sum
-    FROM votes
-    GROUP BY post_id
-    ) AS sums ON posts.id = sums.post_id
-    LEFT JOIN (
-    SELECT post_id, COUNT(comments.id) AS count
-    FROM comments
-    GROUP BY post_id
-    ) AS counts ON posts.id = counts.post_id
-    WHERE posts.hidden = FAlSE
-    GROUP BY posts.id, sum, count
-    ORDER BY count DESC
+    SELECT *
+    FROM story_view
+    ORDER BY comment_count DESC
     LIMIT 10 OFFSET :offset
     """)
     result = db.session.execute(sql, {"offset":offset})
@@ -91,22 +64,11 @@ def get_posts_by_most_comments(offset = 0):
 
 def get_posts_by_least_comments(offset = 0):
     sql = text("""
-    SELECT posts.*, COALESCE(sum, 0) as sum, COALESCE(count, 0) as count
-    FROM posts
-    LEFT JOIN (
-    SELECT post_id, sum(votes.vote) as sum
-    FROM votes
-    GROUP BY post_id
-    ) AS sums ON posts.id = sums.post_id
-    LEFT JOIN (
-    SELECT post_id, COUNT(comments.id) AS count
-    FROM comments
-    GROUP BY post_id
-    ) AS counts ON posts.id = counts.post_id
-    WHERE posts.hidden = FAlSE
-    GROUP BY posts.id, sum, count
-    ORDER BY count ASC
+    SELECT *
+    FROM story_view
+    ORDER BY comment_count ASC
     LIMIT 10 OFFSET :offset
+
     """)
     result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
