@@ -26,33 +26,99 @@ def get_stories():
 
 @app.route("/newest")
 def newest_page():
-    post_list = posts.get_posts_by_newest()
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
+    pg = request.args.get('pg', default=0, type=int)
+
+    if pg < 0:
+        pg = 0
+
+    offset = 10 * pg
+    post_list = posts.get_posts_by_newest(offset)
+
+    has_next = True
+    if len(post_list) < 10:
+        has_next = False
+
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/oldest")
 def oldest_page():
-    post_list = posts.get_posts_by_oldest()
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
+    pg = request.args.get('pg', default=0, type=int)
+
+    if pg < 0:
+        pg = 0
+
+    offset = 10 * pg
+    post_list = posts.get_posts_by_oldest(offset)
+
+    has_next = True
+    if len(post_list) < 10:
+        has_next = False
+
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/highest")
 def highest_voted_page():
-    post_list = posts.get_posts_by_most_votes()
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
+    pg = request.args.get('pg', default=0, type=int)
+
+    if pg < 0:
+        pg = 0
+
+    offset = 10 * pg
+    post_list = posts.get_posts_by_most_votes(offset)
+
+    has_next = True
+    if len(post_list) < 10:
+        has_next = False
+
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/lowest")
 def lowest_voted_page():
-    post_list = posts.get_posts_by_least_votes()
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
+    pg = request.args.get('pg', default=0, type=int)
+
+    if pg < 0:
+        pg = 0
+
+    offset = 10 * pg
+    post_list = posts.get_posts_by_least_votes(offset)
+
+    has_next = True
+    if len(post_list) < 10:
+        has_next = False
+
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/most")
 def most_commented_page():
-    post_list = posts.get_posts_by_most_comments()
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
+    pg = request.args.get('pg', default=0, type=int)
+
+    if pg < 0:
+        pg = 0
+
+    offset = 10 * pg
+    post_list = posts.get_posts_by_most_comments(offset)
+
+    has_next = True
+    if len(post_list) < 10:
+        has_next = False
+
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/least")
 def least_commented_page():
-    post_list = posts.get_posts_by_least_comments()
-    return render_template("index.html", posts=post_list, is_admin=users.is_admin());
+    pg = request.args.get('pg', default=0, type=int)
+
+    if pg < 0:
+        pg = 0
+
+    offset = 10 * pg
+    post_list = posts.get_posts_by_least_comments(offset)
+
+    has_next = True
+    if len(post_list) < 10:
+        has_next = False
+
+    return render_template("index.html", posts=post_list, is_admin=users.is_admin(), pg=pg, has_next=has_next);
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

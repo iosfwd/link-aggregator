@@ -15,7 +15,7 @@ def get_posts_front_page(offset = 0):
     result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_newest():
+def get_posts_by_newest(offset = 0):
     sql = text("""
     SELECT posts.*, COALESCE(sum(votes.vote), 0) as sum
     FROM posts
@@ -23,11 +23,12 @@ def get_posts_by_newest():
     WHERE posts.hidden = FAlSE
     GROUP BY posts.id
     ORDER BY created_at DESC
+    LIMIT 10 OFFSET :offset
     """)
-    result = db.session.execute(sql)
+    result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_oldest():
+def get_posts_by_oldest(offset = 0):
     sql = text("""
     SELECT posts.*, COALESCE(sum(votes.vote), 0) as sum
     FROM posts
@@ -35,11 +36,12 @@ def get_posts_by_oldest():
     WHERE posts.hidden = FAlSE
     GROUP BY posts.id
     ORDER BY created_at ASC
+    LIMIT 10 OFFSET :offset
     """)
-    result = db.session.execute(sql)
+    result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_most_votes():
+def get_posts_by_most_votes(offset = 0):
     sql = text("""
     SELECT posts.*, COALESCE(sum(votes.vote), 0) as sum
     FROM posts
@@ -47,11 +49,12 @@ def get_posts_by_most_votes():
     WHERE posts.hidden = FAlSE
     GROUP BY posts.id
     ORDER BY sum DESC
+    LIMIT 10 OFFSET :offset
     """)
-    result = db.session.execute(sql)
+    result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_least_votes():
+def get_posts_by_least_votes(offset = 0):
     sql = text("""
     SELECT posts.*, COALESCE(sum(votes.vote), 0) as sum
     FROM posts
@@ -59,11 +62,12 @@ def get_posts_by_least_votes():
     WHERE posts.hidden = FAlSE
     GROUP BY posts.id
     ORDER BY sum ASC
+    LIMIT 10 OFFSET :offset
     """)
-    result = db.session.execute(sql)
+    result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_most_comments():
+def get_posts_by_most_comments(offset = 0):
     sql = text("""
     SELECT posts.*, COALESCE(sum, 0) as sum, COALESCE(count, 0) as count
     FROM posts
@@ -80,12 +84,12 @@ def get_posts_by_most_comments():
     WHERE posts.hidden = FAlSE
     GROUP BY posts.id, sum, count
     ORDER BY count DESC
-
+    LIMIT 10 OFFSET :offset
     """)
-    result = db.session.execute(sql)
+    result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
-def get_posts_by_least_comments():
+def get_posts_by_least_comments(offset = 0):
     sql = text("""
     SELECT posts.*, COALESCE(sum, 0) as sum, COALESCE(count, 0) as count
     FROM posts
@@ -102,8 +106,9 @@ def get_posts_by_least_comments():
     WHERE posts.hidden = FAlSE
     GROUP BY posts.id, sum, count
     ORDER BY count ASC
+    LIMIT 10 OFFSET :offset
     """)
-    result = db.session.execute(sql)
+    result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
 def get_post(id):
