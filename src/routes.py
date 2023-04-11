@@ -5,10 +5,8 @@ import users, stories, comments, starred, votes
 @app.route("/")
 def index():
     pg = request.args.get('pg', default=0, type=int)
-
     if pg < 0:
         pg = 0
-
     offset = 10 * pg
     story_list = stories.get_stories_front_page(offset)
 
@@ -26,7 +24,6 @@ def index():
 @app.route("/newest")
 def newest_page():
     pg = request.args.get('pg', default=0, type=int)
-
     if pg < 0:
         pg = 0
 
@@ -47,10 +44,8 @@ def newest_page():
 @app.route("/oldest")
 def oldest_page():
     pg = request.args.get('pg', default=0, type=int)
-
     if pg < 0:
         pg = 0
-
     offset = 10 * pg
     story_list = stories.get_stories_by_oldest(offset)
 
@@ -68,10 +63,8 @@ def oldest_page():
 @app.route("/highest")
 def highest_voted_page():
     pg = request.args.get('pg', default=0, type=int)
-
     if pg < 0:
         pg = 0
-
     offset = 10 * pg
     story_list = stories.get_stories_by_most_votes(offset)
 
@@ -89,10 +82,8 @@ def highest_voted_page():
 @app.route("/lowest")
 def lowest_voted_page():
     pg = request.args.get('pg', default=0, type=int)
-
     if pg < 0:
         pg = 0
-
     offset = 10 * pg
     story_list = stories.get_stories_by_least_votes(offset)
 
@@ -110,10 +101,8 @@ def lowest_voted_page():
 @app.route("/most")
 def most_commented_page():
     pg = request.args.get('pg', default=0, type=int)
-
     if pg < 0:
         pg = 0
-
     offset = 10 * pg
     story_list = stories.get_stories_by_most_comments(offset)
 
@@ -131,10 +120,8 @@ def most_commented_page():
 @app.route("/least")
 def least_commented_page():
     pg = request.args.get('pg', default=0, type=int)
-
     if pg < 0:
         pg = 0
-
     offset = 10 * pg
     story_list = stories.get_stories_by_least_comments(offset)
 
@@ -270,7 +257,6 @@ def story_page(id):
         return render_template("error.html", message="story doesn't exist or is hidden")
 
     if request.method == "GET":
-
         comment_list = comments.get_list(id)
         return render_template("story.html", story=story, comments=comment_list, is_admin=users.is_admin())
 
