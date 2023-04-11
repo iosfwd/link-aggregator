@@ -32,17 +32,16 @@ def add_upvote(story_id):
     user_id = users.user_id()
     if user_id == 0:
         return False
-    try:
-        sql = text("""
-        INSERT INTO votes (user_id, story_id, vote)
-        VALUES (:user_id, :story_id, 1)
-        ON CONFLICT (user_id, story_id)
-        DO UPDATE SET vote=1
-        """)
-        db.session.execute(sql, {"user_id":user_id, "story_id":story_id})
-        db.session.commit()
-    except:
-        return False
+
+    sql = text("""
+    INSERT INTO votes (user_id, story_id, vote)
+    VALUES (:user_id, :story_id, 1)
+    ON CONFLICT (user_id, story_id)
+    DO UPDATE SET vote=1
+    """)
+    db.session.execute(sql, {"user_id":user_id,
+                             "story_id":story_id})
+    db.session.commit()
 
     return True
 
@@ -51,17 +50,15 @@ def add_downvote(story_id):
     if user_id == 0:
         return False
 
-    try:
-        sql = text("""
-        INSERT INTO votes (user_id, story_id, vote)
-        VALUES (:user_id, :story_id, -1)
-        ON CONFLICT (user_id, story_id)
-        DO UPDATE SET vote=-1
-        """)
-        db.session.execute(sql, {"user_id":user_id, "story_id":story_id})
-        db.session.commit()
-    except:
-        return False
+    sql = text("""
+    INSERT INTO votes (user_id, story_id, vote)
+    VALUES (:user_id, :story_id, -1)
+    ON CONFLICT (user_id, story_id)
+    DO UPDATE SET vote=-1
+    """)
+    db.session.execute(sql, {"user_id":user_id,
+                             "story_id":story_id})
+    db.session.commit()
 
     return True
 
@@ -72,8 +69,10 @@ def remove_vote(story_id):
 
     sql = text("""
     DELETE FROM votes
-    WHERE votes.user_id=:user_id AND votes.story_id=:story_id
+    WHERE votes.user_id=:user_id
+    AND votes.story_id=:story_id
     """)
-    db.session.execute(sql, {"user_id":user_id, "story_id":story_id})
+    db.session.execute(sql, {"user_id":user_id,
+                             "story_id":story_id})
     db.session.commit()
     return True

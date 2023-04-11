@@ -5,7 +5,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import secrets
 
 def login(username, password):
-    sql = text("SELECT id, password FROM users WHERE username=:username")
+    sql = text("""
+    SELECT id, password
+    FROM users
+    WHERE username=:username
+    """)
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if not user:
@@ -26,8 +30,12 @@ def logout():
 def register(username, password):
     hash_value = generate_password_hash(password)
     try:
-        sql = text("INSERT INTO users (username,password) VALUES (:username,:password)")
-        db.session.execute(sql, {"username":username, "password":hash_value})
+        sql = text("""
+        INSERT INTO users (username,password)
+        VALUES (:username,:password)
+        """)
+        db.session.execute(sql, {"username":username,
+                                 "password":hash_value})
         db.session.commit()
     except:
         return False
@@ -37,7 +45,11 @@ def user_id():
     return session.get("user_id", 0)
 
 def get_user(id):
-    sql = text("SELECT * FROM users WHERE users.id=:id")
+    sql = text("""
+    SELECT *
+    FROM users
+    WHERE users.id=:id
+    """)
     result = db.session.execute(sql, {"id":id})
     return result.fetchone()
 
@@ -46,7 +58,11 @@ def check_admin():
     if id == 0:
         return False
 
-    sql = text("SELECT is_admin FROM users WHERE users.id=:id")
+    sql = text("""
+    SELECT is_admin
+    FROM users
+    WHERE users.id=:id
+    """)
     result = db.session.execute(sql, {"id":id})
     return result.fetchone().is_admin
 

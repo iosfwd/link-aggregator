@@ -4,7 +4,8 @@ import users
 
 def get_list(story_id):
     sql = text("""
-    SELECT C.id, C.body, C.created_at, U.username, C.parent_comment_id, C.user_id, C.hidden
+    SELECT C.id, C.body, C.created_at, C.parent_comment_id,
+    C.user_id, C.hidden, C.story_id, U.username
     FROM comments C, users U
     WHERE C.user_id=U.id AND C.story_id=:story_id
     """)
@@ -12,7 +13,10 @@ def get_list(story_id):
     return result.fetchall()
 
 def get_comment(id):
-    sql = text("SELECT * FROM comments WHERE id=:id")
+    sql = text("""
+    SELECT id, body, created_at, parent_comment_id, user_id, story_id, hidden
+    FROM comments WHERE id=:id
+    """)
     result = db.session.execute(sql, {"id":id})
     return result.fetchone()
 
@@ -24,7 +28,9 @@ def send(body, user_id, story_id):
     INSERT INTO comments (body, user_id, story_id)
     VALUES (:body, :user_id, :story_id)
     """)
-    db.session.execute(sql, {"body":body, "user_id":user_id, "story_id":story_id})
+    db.session.execute(sql, {"body":body,
+                             "user_id":user_id,
+                             "story_id":story_id})
     db.session.commit()
     return True
 
@@ -36,7 +42,10 @@ def reply(body, user_id, story_id, parent_comment_id):
     INSERT INTO comments (body, user_id, story_id, parent_comment_id)
     VALUES (:body, :user_id, :story_id, :parent_comment_id)
     """)
-    db.session.execute(sql, {"body":body, "user_id":user_id, "story_id":story_id, "parent_comment_id":parent_comment_id})
+    db.session.execute(sql, {"body":body,
+                             "user_id":user_id,
+                             "story_id":story_id,
+                             "parent_comment_id":parent_comment_id})
     db.session.commit()
     return True
 
@@ -49,7 +58,8 @@ def edit_comment(body, comment_id):
     SET body=:body
     WHERE comments.id=:comment_id
     """)
-    db.session.execute(sql, {"body":body, "comment_id":comment_id})
+    db.session.execute(sql, {"body":body,
+                             "comment_id":comment_id})
     db.session.commit()
     return True
 

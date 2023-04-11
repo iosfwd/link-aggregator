@@ -68,13 +68,16 @@ def get_stories_by_least_comments(offset = 0):
     FROM story_view
     ORDER BY comment_count ASC
     LIMIT 10 OFFSET :offset
-
     """)
     result = db.session.execute(sql, {"offset":offset})
     return result.fetchall()
 
 def get_story(id):
-    sql = text("SELECT * FROM stories WHERE id=:id")
+    sql = text("""
+    SELECT *
+    FROM story_view
+    WHERE id=:id
+    """)
     result = db.session.execute(sql, {"id":id})
     return result.fetchone()
 
@@ -83,13 +86,22 @@ def send(title, url):
     if user_id == 0:
         return False
 
-    sql = text("INSERT INTO stories (title, url, user_id) VALUES (:title, :url, :user_id)")
-    db.session.execute(sql, {"title":title, "url":url, "user_id":user_id})
+    sql = text("""
+    INSERT INTO stories (title, url, user_id)
+    VALUES (:title, :url, :user_id)
+    """)
+    db.session.execute(sql, {"title":title,
+                             "url":url,
+                             "user_id":user_id})
     db.session.commit()
     return True
 
 def get_stories_by_user(user_id):
-    sql = text("SELECT * FROM stories WHERE user_id=:user_id")
+    sql = text("""
+    SELECT *
+    FROM stories
+    WHERE user_id=:user_id
+    """)
     result = db.session.execute(sql, {"user_id":user_id})
     return result.fetchall()
 
@@ -97,8 +109,14 @@ def edit_story(title, url, id):
     if users.user_id() == 0:
         return False
 
-    sql = text("UPDATE stories SET (title, url) = (:title, :url) WHERE stories.id=:id")
-    db.session.execute(sql, {"title":title, "url":url, "id":id})
+    sql = text("""
+    UPDATE stories
+    SET (title, url) = (:title, :url)
+    WHERE stories.id=:id
+    """)
+    db.session.execute(sql, {"title":title,
+                             "url":url,
+                             "id":id})
     db.session.commit()
     return True
 

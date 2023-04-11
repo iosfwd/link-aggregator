@@ -34,7 +34,7 @@
 <a href={{ "/story/{}/edit".format(story["id"]) }}>edit</a>
 {% endif %}
 <hr>
-votes : {{ votes[0] }}
+votes : {{ story["vote_sum"] }}
 <form action={{ "/upvote/{}".format(story["id"]) }} method="post">
   <button class="upvote">upvote</button>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">

@@ -4,9 +4,10 @@ import users
 
 def get_starred_for_user(user_id):
     sql = text("""
-    SELECT * FROM stories, starred
-    WHERE starred.story_id=stories.id
-    AND starred.user_id=:user_id
+    SELECT starred.id, starred.story_id, stories.title, stories.url
+    FROM stories, starred
+    WHERE starred.user_id=:user_id
+    AND starred.story_id=stories.id
     AND stories.hidden = FALSE
     """)
     result = db.session.execute(sql, {"user_id":user_id})
@@ -23,7 +24,8 @@ def add_starred(story_id):
     ON CONFLICT (user_id, story_id)
     DO NOTHING
     """)
-    db.session.execute(sql, {"user_id":user_id, "story_id":story_id})
+    db.session.execute(sql, {"user_id":user_id,
+                             "story_id":story_id})
     db.session.commit()
     return True
 
@@ -32,7 +34,10 @@ def remove_starred(id):
     if user_id == 0:
         return False
 
-    sql = text("DELETE FROM starred WHERE starred.id=:id")
+    sql = text("""
+    DELETE FROM starred
+    WHERE starred.id=:id
+    """)
     db.session.execute(sql, {"id":id})
     db.session.commit()
     return True

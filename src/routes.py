@@ -13,7 +13,7 @@ def index():
     story_list = stories.get_stories_front_page(offset)
 
     has_next = True
-    if len(story_list) < 10:
+    if len(story_list) <= 10:
         has_next = False
 
     return render_template("index.html",
@@ -34,7 +34,7 @@ def newest_page():
     story_list = stories.get_stories_by_newest(offset)
 
     has_next = True
-    if len(story_list) < 10:
+    if len(story_list) <= 10:
         has_next = False
 
     return render_template("index.html",
@@ -55,7 +55,7 @@ def oldest_page():
     story_list = stories.get_stories_by_oldest(offset)
 
     has_next = True
-    if len(story_list) < 10:
+    if len(story_list) <= 10:
         has_next = False
 
     return render_template("index.html",
@@ -76,7 +76,7 @@ def highest_voted_page():
     story_list = stories.get_stories_by_most_votes(offset)
 
     has_next = True
-    if len(story_list) < 10:
+    if len(story_list) <= 10:
         has_next = False
 
     return render_template("index.html",
@@ -97,7 +97,7 @@ def lowest_voted_page():
     story_list = stories.get_stories_by_least_votes(offset)
 
     has_next = True
-    if len(story_list) < 10:
+    if len(story_list) <= 10:
         has_next = False
 
     return render_template("index.html",
@@ -118,7 +118,7 @@ def most_commented_page():
     story_list = stories.get_stories_by_most_comments(offset)
 
     has_next = True
-    if len(story_list) < 10:
+    if len(story_list) <= 10:
         has_next = False
 
     return render_template("index.html",
@@ -139,7 +139,7 @@ def least_commented_page():
     story_list = stories.get_stories_by_least_comments(offset)
 
     has_next = True
-    if len(story_list) < 10:
+    if len(story_list) <= 10:
         has_next = False
 
     return render_template("index.html",
@@ -193,6 +193,9 @@ def new():
 @app.route("/story/<int:story_id>/edit", methods=["GET", "POST"])
 def edit_story(story_id):
     story = stories.get_story(story_id)
+    if not story:
+        return render_template("error.html", message="story doesn't exist or is hidden")
+
     user_id = users.user_id()
 
     if story.user_id != user_id and not users.is_admin():
@@ -203,29 +206,25 @@ def edit_story(story_id):
 
     if request.method == "POST":
         title = request.form["title"]
-
         if len(title) > 256:
             return render_template("error.html", message="title was over 256 characters")
 
         url = request.form["url"]
-
         if len(url) > 2048:
             return render_template("error.html", message="url was over 2048 characters")
 
         if stories.edit_story(title, url, story_id):
             return redirect("/story/{}".format(story_id))
         else:
-            return render_template("error.html", message="editing comment failed")
+            return render_template("error.html", message="editing story failed")
 
 @app.route("/send", methods=["POST"])
 def send():
     title = request.form["title"]
-
     if len(title) > 256:
             return render_template("error.html", message="title was over 256 characters")
 
     url = request.form["url"]
-
     if len(url) > 2048:
             return render_template("error.html", message="url was over 2048 characters")
 
@@ -266,11 +265,14 @@ def downvote(id):
 
 @app.route("/story/<int:id>", methods=["GET", "POST"])
 def story_page(id):
+    story = stories.get_story(id)
+    if not story:
+        return render_template("error.html", message="story doesn't exist or is hidden")
+
     if request.method == "GET":
-        story = stories.get_story(id)
-        vts = votes.get_votes_by_story(id)
+
         comment_list = comments.get_list(id)
-        return render_template("story.html", story=story, comments=comment_list, votes=vts, is_admin=users.is_admin())
+        return render_template("story.html", story=story, comments=comment_list, is_admin=users.is_admin())
 
     if request.method == "POST":
         user_id = users.user_id()
@@ -285,18 +287,20 @@ def story_page(id):
         if comments.send(body, user_id, id):
             return redirect("/story/{}".format(id))
         else:
-            return render_template("error.html", message="sending comment failed", is_admin=users.is_admin())
+            return render_template("error.html", message="sending comment failed")
 
 @app.route("/comment/<int:comment_id>", methods=["GET", "POST"])
 def comment_page(comment_id):
+    comment = comment.get_comment(comment_id)
+    if not comment:
+        return render_template("error.html", message="comment doesn't exist or is hidden")
+
     if request.method == "GET":
-        comment = comments.get_comment(comment_id)
         story = stories.get_story(comment.story_id)
         user = users.get_user(comment.user_id)
         return render_template("comment.html", comment=comment, story=story, user=user)
 
     if request.method == "POST":
-        comment = comments.get_comment(comment_id)
         user_id = users.user_id()
         body = request.form["body"]
 
@@ -313,7 +317,10 @@ def comment_page(comment_id):
 
 @app.route("/comment/<int:comment_id>/edit", methods=["GET", "POST"])
 def edit_comment_page(comment_id):
-    comment = comments.get_comment(comment_id)
+    comment = comment.get_comment(comment_id)
+    if not comment:
+        return render_template("error.html", message="comment doesn't exist or is hidden")
+
     user_id = users.user_id()
 
     if comment.user_id != user_id and not users.is_admin():
@@ -340,6 +347,9 @@ def edit_comment_page(comment_id):
 @app.route("/comment/<int:comment_id>/hide", methods=["POST"])
 def hide_comment_page(comment_id):
     comment = comments.get_comment(comment_id)
+    if not comment:
+        return render_template("error.html", message="comment doesn't exist or is hidden")
+
     user_id = users.user_id()
 
     if session["csrf_token"] != request.form["csrf_token"]:
@@ -357,6 +367,8 @@ def hide_comment_page(comment_id):
 def hide_story_page(story_id):
     user_id = users.user_id()
     story = stories.get_story(story_id)
+    if not story:
+        return render_template("error.html", message="story doesn't exist or is hidden")
 
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
