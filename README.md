@@ -1,3 +1,8 @@
+# 23.4
+
+Haku-ominaisuus lisätty. Lähdekoodeja refaktoroitu. Ulkoasu kaipaisi
+vielä työstöä.
+
 # 2.4
 
 Tällä hetkellä sovelluksen aiemmin mainitut ominaisuudet on toteutettu
@@ -21,10 +26,16 @@ paikallinen osoite ja salainen avain:
     DATABASE_URL=<tietokannan_osoite>
     SECRET_KEY=<salainen_avain>
 
-Luo tietokannan skeema:
+Alusta tietokanta:
 
     $ cd src/
-    $ psql < schema.sql
+    $ psql -d tietokannan_nimi < schema.sql
+
+Vaihtoehtoisesti käynnistä Postgres-tulkki src/ kansiossa ja aja:
+
+    $ cd src/
+    $ psql -d tietokannan_nimi
+    # \i schema.sql
 
 Käynnistys:
 
