@@ -226,7 +226,7 @@ def send():
 @app.route("/upvote/<int:id>", methods=["POST"])
 def upvote(id):
     if users.user_id() == 0:
-        return render_template("error.html", message="you have to be logged")
+        return render_template("error.html", message="you have to be logged in")
 
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
@@ -239,7 +239,7 @@ def upvote(id):
 @app.route("/downvote/<int:id>", methods=["POST"])
 def downvote(id):
     if users.user_id() == 0:
-        return render_template("error.html", message="you have to be logged")
+        return render_template("error.html", message="you have to be logged in")
 
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
@@ -372,7 +372,7 @@ def starred_page():
     user_id = users.user_id()
 
     if user_id == 0:
-        return render_template("error.html", message="you have to be logged")
+        return render_template("error.html", message="you have to be logged in")
 
     story_list = starred.get_starred_for_user(user_id)
     user = users.get_user(user_id)
@@ -381,7 +381,7 @@ def starred_page():
 @app.route("/star/<int:id>", methods=["POST"])
 def star_page(id):
     if users.user_id() == 0:
-        return render_template("error.html", message="you have to be logged")
+        return render_template("error.html", message="you have to be logged in")
 
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
@@ -394,7 +394,7 @@ def star_page(id):
 @app.route("/destar/<int:id>", methods=["POST"])
 def destar_page(id):
     if users.user_id() == 0:
-        return render_template("error.html", message="you have to be logged")
+        return render_template("error.html", message="you have to be logged in")
 
     if session["csrf_token"] != request.form["csrf_token"]:
         abort(403)
