@@ -4,7 +4,7 @@ import users
 
 def get_stories_front_page(offset = 0):
     sql = text("""
-    SELECT *
+    SELECT id, title, url, user_id, created_at, username, vote_sum, comment_count
     FROM story_view
     ORDER BY vote_sum DESC
     LIMIT 10 OFFSET :offset
@@ -14,7 +14,7 @@ def get_stories_front_page(offset = 0):
 
 def get_stories_by_newest(offset = 0):
     sql = text("""
-    SELECT *
+    SELECT id, title, url, user_id, created_at, username, vote_sum, comment_count
     FROM story_view
     ORDER BY created_at DESC
     LIMIT 10 OFFSET :offset
@@ -24,7 +24,7 @@ def get_stories_by_newest(offset = 0):
 
 def get_stories_by_oldest(offset = 0):
     sql = text("""
-    SELECT *
+    SELECT id, title, url, user_id, created_at, username, vote_sum, comment_count
     FROM story_view
     ORDER BY created_at ASC
     LIMIT 10 OFFSET :offset
@@ -34,7 +34,7 @@ def get_stories_by_oldest(offset = 0):
 
 def get_stories_by_most_votes(offset = 0):
     sql = text("""
-    SELECT *
+    SELECT id, title, url, user_id, created_at, username, vote_sum, comment_count
     FROM story_view
     ORDER BY vote_sum DESC
     LIMIT 10 OFFSET :offset
@@ -44,7 +44,7 @@ def get_stories_by_most_votes(offset = 0):
 
 def get_stories_by_least_votes(offset = 0):
     sql = text("""
-    SELECT *
+    SELECT id, title, url, user_id, created_at, username, vote_sum, comment_count
     FROM story_view
     ORDER BY vote_sum ASC
     LIMIT 10 OFFSET :offset
@@ -54,7 +54,7 @@ def get_stories_by_least_votes(offset = 0):
 
 def get_stories_by_most_comments(offset = 0):
     sql = text("""
-    SELECT *
+    SELECT id, title, url, user_id, created_at, username, vote_sum, comment_count
     FROM story_view
     ORDER BY comment_count DESC
     LIMIT 10 OFFSET :offset
@@ -64,7 +64,7 @@ def get_stories_by_most_comments(offset = 0):
 
 def get_stories_by_least_comments(offset = 0):
     sql = text("""
-    SELECT *
+    SELECT id, title, url, user_id, created_at, username, vote_sum, comment_count
     FROM story_view
     ORDER BY comment_count ASC
     LIMIT 10 OFFSET :offset
@@ -74,7 +74,7 @@ def get_stories_by_least_comments(offset = 0):
 
 def get_story(id):
     sql = text("""
-    SELECT *
+    SELECT id, title, url, user_id, created_at, username, vote_sum, comment_count
     FROM story_view
     WHERE id=:id
     """)
@@ -98,7 +98,7 @@ def send(title, url):
 
 def get_stories_by_user(user_id):
     sql = text("""
-    SELECT *
+    SELECT id, title, url, user_id, created_at, hidden
     FROM stories
     WHERE user_id=:user_id
     """)
@@ -135,7 +135,7 @@ def hide_story(story_id):
 
 def search(query):
     sql = text("""
-    SELECT *
+    SELECT id, title, url, user_id, created_at, username, vote_sum, comment_count
     FROM story_view
     WHERE ((title LIKE :query)
     OR (url LIKE :query))
