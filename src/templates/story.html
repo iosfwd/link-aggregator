@@ -66,7 +66,10 @@ at {{ comment['created_at'].strftime("%Y-%m-%d %H:%M:%S") }} |
 <a href={{ "/comment/{}".format(comment['id']) }}>reply</a>
 {% if session.user_id == comment['user_id'] or is_admin %} |
 <a href={{ "/comment/{}/edit".format(comment['id']) }}>edit</a> |
-<a href={{ "/comment/{}/hide".format(comment['id']) }}>hide</a>
+<form action={{ "/comment/{}/hide".format(comment["id"]) }} method="post">
+  <button class="hide">hide</button>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+</form>
 {% endif %}
 <p>
   {% if comment['hidden'] %}
