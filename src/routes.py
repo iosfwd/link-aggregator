@@ -319,7 +319,7 @@ def edit_comment_page(comment_id):
             abort(403)
 
         if comments.edit_comment(body, comment_id):
-            return redirect("/comment/{}".format(comment_id))
+            return redirect("/story/{}".format(comment.story_id))
         else:
             return render_template("error.html", message="editing comment failed")
 

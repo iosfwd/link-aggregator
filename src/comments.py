@@ -15,7 +15,8 @@ def get_list(story_id):
 def get_comment(id):
     sql = text("""
     SELECT id, body, created_at, parent_comment_id, user_id, story_id, hidden
-    FROM comments WHERE id=:id
+    FROM comments
+    WHERE id=:id AND hidden = FALSE
     """)
     result = db.session.execute(sql, {"id":id})
     return result.fetchone()
