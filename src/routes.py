@@ -277,7 +277,7 @@ def story_page(id):
 
 @app.route("/comment/<int:comment_id>", methods=["GET", "POST"])
 def comment_page(comment_id):
-    comment = comment.get_comment(comment_id)
+    comment = comments.get_comment(comment_id)
     if not comment:
         return render_template("error.html", message="comment doesn't exist or is hidden")
 
@@ -303,7 +303,7 @@ def comment_page(comment_id):
 
 @app.route("/comment/<int:comment_id>/edit", methods=["GET", "POST"])
 def edit_comment_page(comment_id):
-    comment = comment.get_comment(comment_id)
+    comment = comments.get_comment(comment_id)
     if not comment:
         return render_template("error.html", message="comment doesn't exist or is hidden")
 
