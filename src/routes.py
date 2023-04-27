@@ -16,7 +16,6 @@ def index():
 
     return render_template("index.html",
                            stories=story_list,
-                           is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
                            ordering="");
@@ -36,7 +35,6 @@ def newest_page():
 
     return render_template("index.html",
                            stories=story_list,
-                           is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
                            ordering="newest");
@@ -55,7 +53,6 @@ def oldest_page():
 
     return render_template("index.html",
                            stories=story_list,
-                           is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
                            ordering="oldest");
@@ -74,7 +71,6 @@ def highest_voted_page():
 
     return render_template("index.html",
                            stories=story_list,
-                           is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
                            ordering="highest");
@@ -93,7 +89,6 @@ def lowest_voted_page():
 
     return render_template("index.html",
                            stories=story_list,
-                           is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
                            ordering="lowest");
@@ -112,7 +107,6 @@ def most_commented_page():
 
     return render_template("index.html",
                            stories=story_list,
-                           is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
                            ordering="most");
@@ -131,7 +125,6 @@ def least_commented_page():
 
     return render_template("index.html",
                            stories=story_list,
-                           is_admin=users.is_admin(),
                            pg=pg,
                            has_next=has_next,
                            ordering="least");
@@ -258,7 +251,7 @@ def story_page(id):
 
     if request.method == "GET":
         comment_list = comments.get_list(id)
-        return render_template("story.html", story=story, comments=comment_list, is_admin=users.is_admin())
+        return render_template("story.htm", story=story, comments=comment_list)
 
     if request.method == "POST":
         user_id = users.user_id()
