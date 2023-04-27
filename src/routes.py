@@ -251,7 +251,7 @@ def story_page(id):
 
     if request.method == "GET":
         comment_list = comments.get_list(id)
-        return render_template("story.htm", story=story, comments=comment_list)
+        return render_template("story.html", story=story, comments=comment_list)
 
     if request.method == "POST":
         user_id = users.user_id()
