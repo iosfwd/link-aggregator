@@ -20,7 +20,7 @@
   <button class="star">star</button>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
-{% if session.user_id == story['user_id'] or is_admin %}
+{% if session.user_id == story['user_id'] or session.is_admin %}
 <form action={{ "/story/{}/hide".format(story["id"]) }} method="post">
   <button class="hide">hide</button>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">

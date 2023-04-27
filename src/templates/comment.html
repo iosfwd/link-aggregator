@@ -5,7 +5,7 @@
 <hr>
 <a href={{ "/profile/{}".format(comment['user_id']) }}>{{ user['username'] }}</a>
 at {{ comment['created_at'].strftime("%Y-%m-%d %H:%M:%S") }}
-{% if session.user_id == comment['user_id'] %} |
+{% if session.user_id == comment['user_id'] or session.is_admin %} |
 <a href={{ "/comment/{}/edit".format(comment['id']) }}>edit</a>
 {% endif %}
 <p>
