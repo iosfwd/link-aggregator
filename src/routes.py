@@ -11,7 +11,7 @@ def index():
     story_list = stories.get_stories_front_page(offset)
 
     has_next = True
-    if len(story_list) <= 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
@@ -31,7 +31,7 @@ def newest_page():
     story_list = stories.get_stories_by_newest(offset)
 
     has_next = True
-    if len(story_list) <= 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
@@ -50,7 +50,7 @@ def oldest_page():
     story_list = stories.get_stories_by_oldest(offset)
 
     has_next = True
-    if len(story_list) <= 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
@@ -69,7 +69,7 @@ def highest_voted_page():
     story_list = stories.get_stories_by_most_votes(offset)
 
     has_next = True
-    if len(story_list) <= 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
@@ -88,7 +88,7 @@ def lowest_voted_page():
     story_list = stories.get_stories_by_least_votes(offset)
 
     has_next = True
-    if len(story_list) <= 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
@@ -107,7 +107,7 @@ def most_commented_page():
     story_list = stories.get_stories_by_most_comments(offset)
 
     has_next = True
-    if len(story_list) <= 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
@@ -126,7 +126,7 @@ def least_commented_page():
     story_list = stories.get_stories_by_least_comments(offset)
 
     has_next = True
-    if len(story_list) <= 10:
+    if len(story_list) < 10:
         has_next = False
 
     return render_template("index.html",
