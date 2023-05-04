@@ -1,3 +1,7 @@
+# 4.4
+
+Bugikorjauksia. Ulkoasun parantelua.
+
 # 23.4
 
 Haku-ominaisuus lisätty. Lähdekoodeja refaktoroitu. Ulkoasu kaipaisi
