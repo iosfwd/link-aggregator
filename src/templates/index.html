@@ -36,14 +36,14 @@
 </ul>
 
 {% if has_next %}
-<form action={{ "/{}".format(ordering) }} method="get">
+<form class="actions" action={{ "/{}".format(ordering) }} method="get">
   <button class="next">next</button>
   <input type="hidden" name="pg" value="{{ pg + 1 }}">
 </form>
 {% endif %}
 
 {% if pg > 0 %}
-<form action={{ "/{}".format(ordering) }} method="get">
+<form class="actions" action={{ "/{}".format(ordering) }} method="get">
   <button class="prev">prev</button>
   <input type="hidden" name="pg" value="{{ pg - 1 }}">
 </form>
