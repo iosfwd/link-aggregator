@@ -8,7 +8,7 @@
     <a href={{ "/comment/{}".format(c_comment['id']) }}>reply</a>
     {% if session.user_id == c_comment['user_id'] or session.is_admin %} |
     <a href={{ "/comment/{}/edit".format(c_comment['id']) }}>edit</a> |
-    <form action={{ "/comment/{}/hide".format(c_comment["id"]) }} method="post">
+    <form class="actions" action={{ "/comment/{}/hide".format(c_comment["id"]) }} method="post">
       <button class="hide">hide</button>
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
@@ -37,17 +37,17 @@
 {% endif %}
 <hr>
 votes : {{ story["vote_sum"] }}
-<form action={{ "/upvote/{}".format(story["id"]) }} method="post">
+<form class="actions" action={{ "/upvote/{}".format(story["id"]) }} method="post">
   <button class="upvote">upvote</button>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
-<form action={{ "/downvote/{}".format(story["id"]) }} method="post">
+<form class="actions" action={{ "/downvote/{}".format(story["id"]) }} method="post">
   <button class="downvote">downvote</button>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 <hr>
 {% if session.user_id %}
-<form action={{ "/story/{}".format(story["id"]) }} method="post">
+<form class="actions" action={{ "/story/{}".format(story["id"]) }} method="post">
   <textarea name="body" rows="5" cols="80"></textarea>
   <br>
   <input type="submit" value="send">
@@ -68,7 +68,7 @@ at {{ comment['created_at'].strftime("%Y-%m-%d %H:%M:%S") }} |
 <a href={{ "/comment/{}".format(comment['id']) }}>reply</a>
 {% if session.user_id == comment['user_id'] or session.is_admin %} |
 <a href={{ "/comment/{}/edit".format(comment['id']) }}>edit</a> |
-<form action={{ "/comment/{}/hide".format(comment["id"]) }} method="post">
+<form class="actions" action={{ "/comment/{}/hide".format(comment["id"]) }} method="post">
   <button class="hide">hide</button>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>

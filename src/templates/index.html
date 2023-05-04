@@ -1,34 +1,37 @@
 {% extends "layout.html" %}
+
+
 {% block title %}front page{% endblock %}
 {% block content %}
 <ul>
 {% for story in stories %}
-<li> {{ story["vote_sum"] }} votes | <a href={{ story["url"] }}>{{ story["title"] }}</a> sent by <a href={{ "/profile/{}".format(story["user_id"]) }}>{{ story["username"] }}</a> at {{ story["created_at"].strftime("%Y-%m-%d %H:%M:%S") }} </li>
+<li> {{ story["vote_sum"] }} votes | <a href={{ story["url"] }}>{{ story["title"] }}</a> sent by <a href={{ "/profile/{}".format(story["user_id"]) }}>{{ story["username"] }}</a> at {{ story["created_at"].strftime("%Y-%m-%d %H:%M:%S") }} | {{ story["comment_count"] }} comments | <a href={{ "/story/{}".format(story["id"]) }}>discuss</a>
+
 
 {% if session.user_id %}
-<form action={{ "/upvote/{}".format(story["id"]) }} method="post">
-  <button class="upvote">upvote</button>
-  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-</form>
-
-<form action={{ "/downvote/{}".format(story["id"]) }} method="post">
-  <button class="downvote">downvote</button>
+<div>
+  <form class="actions" action={{ "/upvote/{}".format(story["id"]) }} method="post">
+    <button class="upvote">upvote</button>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-</form>
+  </form>
+  <form class="actions" action={{ "/downvote/{}".format(story["id"]) }} method="post">
+    <button class="downvote">downvote</button>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+  </form>
+  <form class="actions" action={{ "/star/{}".format(story["id"]) }} method="post">
+    <button class="star">star</button>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+  </form>
 
-<form action={{ "/star/{}".format(story["id"]) }} method="post">
-  <button class="star">star</button>
-  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-</form>
-{% if session.user_id == story['user_id'] or session.is_admin %}
-<form action={{ "/story/{}/hide".format(story["id"]) }} method="post">
-  <button class="hide">hide</button>
-  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-</form>
+  {% if session.user_id == story['user_id'] or session.is_admin %}
+  <form class="actions" action={{ "/story/{}/hide".format(story["id"]) }} method="post">
+    <button class="hide">hide</button>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+  </form>
+  {% endif %}
+</div>
 {% endif %}
-{% endif %}
-
-{{ story["comment_count"] }} comments | <a href={{ "/story/{}".format(story["id"]) }}>discuss</a>
+</li>
 {% endfor %}
 </ul>
 

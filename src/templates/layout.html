@@ -1,4 +1,6 @@
 <!doctype html>
+<link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>link aggregator - {% block title %}{% endblock %}</title>
 <h1>link aggregator</h1>
 <a href="/">front page</a> |
@@ -17,7 +19,9 @@
 <a href="/register">register</a>
 {% endif %}
 <hr>
+<body>
 {% block content %}{% endblock %}
+</body>
 <hr>
 <form action="/result" method="GET">
   <input type="text" name="query">

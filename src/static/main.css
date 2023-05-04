@@ -1,0 +1,13 @@
+body {
+    width: 87.5%;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    background-color: #fffff8;
+    color: #111;
+    max-width: 800px;
+}
+
+.actions {
+    display: inline-block;
+}
